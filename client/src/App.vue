@@ -1,17 +1,32 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <p>{{this.word}}</p>
+    <button v-on:click="hideWord">Start Game</button>
+    <p>{{this.hiddenWord}}</p>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+
+  },
+  data(){
+    return{
+      word: "television",
+      hiddenWord: null
+    }
+  },
+  methods: {
+    hideWord(){
+      let array = this.word.split("")
+      this.hiddenWord = array
+      for (let i = 0; i < array.length; i++){
+          array[i] = "_"
+      }
+    }
   }
 }
 </script>
