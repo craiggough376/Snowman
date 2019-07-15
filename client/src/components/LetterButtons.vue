@@ -18,7 +18,6 @@ export default {
   methods: {
     chooseLetter(letter){
       eventBus.$emit('chosen-letter', letter)
-      console.log(letter);
     }
   }
 }

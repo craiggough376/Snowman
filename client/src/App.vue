@@ -1,9 +1,9 @@
 <template>
   <div id="app">
-    <p>{{this.word}}</p>
     <button v-on:click="hideWord">Start Game</button>
-    <p>{{this.hiddenWord}}</p>
-    <letter-buttons></letter-buttons>
+    <p>{{displayWord}}</p>
+    <p>Lives: {{this.lives}}</p>
+    <letter-buttons v-if="this.start !== false"></letter-buttons>
   </div>
 </template>
 
@@ -18,25 +18,63 @@ export default {
   },
   data(){
     return{
-      word: "television",
+      start: false,
+      word: "shaun",
       hiddenWord: null,
-      chosenLetter: null
+      chosenLetter: null,
+      lives: 5
+    }
+  },
+  computed: {
+    displayWord(){
+      if (this.hiddenWord){
+        return this.hiddenWord.join()
+      }
     }
   },
   methods: {
     hideWord(){
+      if (this.start === false){
+        this.start = true}
       let array = this.word.split("")
       this.hiddenWord = array
       for (let i = 0; i < array.length; i++){
           array[i] = "_"
       }
+    },
+    checkLetter(){
+      this.takeLife()
+      let splitWord = this.word.split("")
+      if (this.chosenLetter !== null){
+        for(let i=0; i < splitWord.length; i++){
+          if (splitWord[i] === this.chosenLetter){
+            this.showLetter(splitWord[i]);
+          }
+        }
+      }
+    },
+    showLetter(word){
+      //search for letter in hiddenword
+      const index = this.word.indexOf(word)
+      console.log(index);
+      this.hiddenWord.splice(index, 1)
+      this.hiddenWord.splice(index, 0, word)
+    },
+    getChosenLetter(){
+      eventBus.$on('chosen-letter', (letter) => {
+      this.chosenLetter = letter
+       // console.log(this.chosenLetter);
+          this.checkLetter()})
+      },
+
+    takeLife(){
+      this.lives -= 1
     }
   },
-  mounted(){
-    eventBus.$on('chosen-letter', (letter) => {
-    this.chosenLetter = letter
-  console.log(this.chosenLetter)})
-  }
+
+  mounted() {
+    this.getChosenLetter()
+}
 }
 </script>
 
