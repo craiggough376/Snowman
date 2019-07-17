@@ -1,6 +1,6 @@
 <template lang="html">
   <div>
-    <p>Choose a letter</p>
+    <p>Choose a letter (Hint: film)</p>
     <button v-on:click="chooseLetter(letter)" v-for="letter in alphabet.split('')" onclick="style='display: none;'">{{letter}}</button>
   </div>
 </template>
@@ -12,7 +12,7 @@ export default {
   name: 'letter-buttons',
   data(){
     return{
-      alphabet: "abcdefghijklmnopqrstuvwxyz",
+      alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
     }
   },
   methods: {
