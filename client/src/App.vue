@@ -1,25 +1,27 @@
 <template>
   <div id="app">
     <p>{{displayWord}}</p>
-    <p v-if="this.start !== false">Lives: {{this.lives}}</p>
-    <p v-if="this.won === true">CORRECT! You win!</p>
-    <p v-if="this.lost === true">You Lose</p>
+    <p v-if="this.start !== false">Lives: {{this.lives}}
+    <p v-if="this.won === true"><span style='font-size:30px;'>&#9786;</span> CORRECT! You win!</p>
+    <p v-if="this.lost === true"><span style='font-size:30px;'>&#9785;</span> You Lose</p>
     <letter-buttons v-if="this.start !== false"></letter-buttons>
     <br>
     <div v-if="this.start === false && ((this.won === false) && (this.lost === false))" class="">
-      <h1>HANGMAN</h1>
+      <h1>SNOWMAN<span style='font-size:40px;'>&#9924;</span></h1>
       <button v-on:click="startGame">Start Game</button>
     </div>
     <button v-if="this.start === true || ((this.won === true) || (this.lost === true))" v-on:click="startGame">Restart Game</button>
+
+
   </div>
 </template>
 
 <!--
 todo list
-1 show word when game is lost
 2 get word from larger array(another vue?)
 3 be able to have multiple word answers
 4 add html hangman
+5 add css
 -->
 
 <script>
@@ -34,8 +36,9 @@ export default {
   data(){
     return{
       start: false,
-      words: ["GOODFELLAS", "SCARFACE", "JAWS", "IT", "WALLE", "ALIEN", "ALADDIN", "ROCKY", "PSYCHO", "CASABLANCA", "ELF"],
+      words: ["GOODFELLAS", "SCARFACE", "JAWS", "ET", "BABE", "ALIEN", "ALADDIN", "ROCKY", "PSYCHO", "CASABLANCA", "ELF"],
       word: null,
+      holdWord: null,
       hiddenWord: null,
       chosenLetter: null,
       lives: null,
@@ -45,8 +48,13 @@ export default {
   },
   computed: {
     displayWord(){
-      if (this.hiddenWord){
+      if (this.hiddenWord && this.start !== false){
         return this.hiddenWord.join(" ")
+      }else{
+        if (this.holdWord){
+          let array = this.holdWord.split("")
+        return array.join(" ")
+        }
       }
     }
   },
@@ -69,6 +77,8 @@ export default {
       this.word = this.words[Math.floor(Math.random() * this.words.length)]
       let index = this.words.indexOf(this.word)
       this.words.splice(index, 1)
+      this.holdWord = this.word
+      console.log(this.word);
       console.log(this.words);
     },
     getChosenLetter(){
@@ -78,10 +88,11 @@ export default {
           this.checkLetter()})
       },
       checkLives(){
-        if(this.lives > 0){
+        if(this.lives >= 1){
           return true
         }else{
           this.endGame();
+          this.lost = true;
         }
       },
     checkLetter(){
@@ -105,6 +116,7 @@ export default {
         return true;
       }else{
         this.lives -= 1;
+        this.checkWon();
       }
     },
     showLetter(letter){
@@ -121,18 +133,18 @@ export default {
     },
     checkWon(){
       let array = this.word.split("")
-      if(array.every(letter => letter === "_")){
+      if((array.every(letter => letter === "_") || this.lives === 0)){
         this.endGame()
       }
     },
     endGame(){
-      this.start = false;
-      if(this.lives > 0){
+        this.start = false;
+      if(this.lives >= 1){
         this.won = true
       }else{
-        this.lost = true;
+            this.lost = true;
+        }
       }
-    }
   },
   mounted() {
     this.getChosenLetter()
@@ -149,4 +161,8 @@ export default {
   color: #2c3e50;
   margin-top: 60px;
 }
+
+
+
+
 </style>
